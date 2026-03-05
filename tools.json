@@ -1,0 +1,23 @@
+[
+    {
+        "id": "1",
+        "name": "ChatGPT",
+        "description": "AI assistant for various tasks",
+        "icon": "https://openai.com/favicon.ico",
+        "url": "https://openai.com"
+    },
+    {
+        "id": "2",
+        "name": "Claude",
+        "description": "AI assistant for various tasks",
+        "icon": "https://openai.com/favicon.ico",
+        "url": "https://openai.com"
+    },
+    {
+        "id": "3",
+        "name": "NotebookLM",
+        "description": "AI assistant for various tasks",
+        "icon": "https://openai.com/favicon.ico",
+        "url": "https://notebooklm.google.com"
+    }
+]
