@@ -15,7 +15,7 @@ const ToolWrapper = () => {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/otus_open_lesson_march">
       <Nav />
       <Routes>
         <Route path="/" element={<App />} />
