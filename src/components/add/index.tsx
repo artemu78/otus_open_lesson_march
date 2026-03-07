@@ -1,7 +1,8 @@
-import { useActionState, useEffect, useRef, useState, use, Suspense } from "react";
+import { useActionState, useEffect, useRef, useState, Suspense } from "react";
 import { useNavigate } from "react-router";
 import { useStore } from "../../store";
 import { generateAIDescription } from "@/library";
+import { AIDescriptionPreview } from "./AIDescriptionPreview";
 
 interface IFormState {
     error?: string;
@@ -13,11 +14,21 @@ export const AddAIToolForm = () => {
     const { addAITool } = useStore();
     const formRef = useRef<HTMLFormElement>(null);
     const navigate = useNavigate();
-    const [description, setDescription] = useState("");
-    const [aiPromise, setAiPromise] = useState<Promise<string> | null>(null);
+    const [aiPromise, setAiPromise] = useState<Promise<{ response: string }> | null>(null);
+
+    const [fields, setFields] = useState({
+        name: "",
+        description: "",
+        icon: "",
+        url: "",
+    });
+
 
     const handleGenerateAI = () => {
-        setAiPromise(generateAIDescription());
+        if (!formRef.current) return;
+        const formData = new FormData(formRef.current);
+        const name = formData.get("name") as string;
+        setAiPromise(generateAIDescription(name || ""));
     };
 
     const action = async (_prevState: IFormState, formData: FormData): Promise<IFormState> => {
@@ -27,7 +38,7 @@ export const AddAIToolForm = () => {
         const url = formData.get("url") as string;
 
         if (!name || !description || !icon) {
-            return { error: "All fields are required" };
+            return { error: "All fields are required", success: false };
         }
 
         const tool = addAITool({ name, description, icon, url });
@@ -50,6 +61,8 @@ export const AddAIToolForm = () => {
                 <div className="flex flex-col gap-2">
                     <label htmlFor="name" className="text-slate-400 text-sm">Name</label>
                     <input
+                        value={fields.name}
+                        onChange={(e) => setFields({ ...fields, name: e.target.value })}
                         id="name"
                         name="name"
                         type="text"
@@ -76,15 +89,15 @@ export const AddAIToolForm = () => {
                         name="description"
                         placeholder="What does this tool do?"
                         rows={3}
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        value={fields.description}
+                        onChange={(e) => setFields({ ...fields, description: e.target.value })}
                         className="p-3 rounded-lg border border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-vertical"
                     />
                     {aiPromise && (
                         <div className="mt-2">
                             <Suspense fallback={<p className="text-xs text-indigo-400 animate-pulse">Generating description... ✨</p>}>
-                                <AIDescriptionPreview promise={aiPromise} onAccept={(val) => {
-                                    setDescription(val);
+                                <AIDescriptionPreview promise={aiPromise} onAccept={(description) => {
+                                    setFields({ ...fields, description });
                                     setAiPromise(null);
                                 }} />
                             </Suspense>
@@ -100,6 +113,8 @@ export const AddAIToolForm = () => {
                         type="text"
                         placeholder="https://example.com/icon.png"
                         className="p-3 rounded-lg border border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                        value={fields.icon}
+                        onChange={(e) => setFields({ ...fields, icon: e.target.value })}
                     />
                 </div>
 
@@ -111,6 +126,8 @@ export const AddAIToolForm = () => {
                         type="text"
                         placeholder="https://example.com"
                         className="p-3 rounded-lg border border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                        value={fields.url}
+                        onChange={(e) => setFields({ ...fields, url: e.target.value })}
                     />
                 </div>
 
@@ -128,22 +145,6 @@ export const AddAIToolForm = () => {
                     {isPending ? 'Adding...' : 'Add AI Tool'}
                 </button>
             </form>
-        </div>
-    );
-};
-
-const AIDescriptionPreview = ({ promise, onAccept }: { promise: Promise<string>, onAccept: (val: string) => void }) => {
-    const result = use(promise);
-    return (
-        <div className="p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-sm animate-in fade-in slide-in-from-top-1">
-            <p className="text-slate-300 mb-2 italic">"{result}"</p>
-            <button
-                type="button"
-                onClick={() => onAccept(result)}
-                className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-1 rounded transition-colors border-none cursor-pointer"
-            >
-                Accept ✨
-            </button>
         </div>
     );
 };
