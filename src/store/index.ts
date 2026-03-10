@@ -10,17 +10,20 @@ export interface IAITool {
 
 type Store = {
   aiTools: IAITool[]
-  addAITool: (tool: Omit<IAITool, 'id'>) => IAITool
+  addAITool: (tool: IAITool) => IAITool
   removeAITool: (id: string) => void
 }
 
 export const useStore = create<Store>()((set) => ({
   aiTools: [],
-  addAITool: (tool) => {
-    const newTool = { ...tool, id: crypto.randomUUID() };
-    set((state) => ({
-      aiTools: [...state.aiTools, newTool]
-    }));
+  addAITool: (newTool) => {
+
+    set((state) => {
+      if (state.aiTools.findIndex((tool) => tool["id"] === newTool.id) === -1)
+        return { aiTools: [...state.aiTools, newTool] }
+      else
+        return { aiTools: [...state.aiTools] }
+    });
     return newTool;
   },
   removeAITool: (id) => set((state) => ({

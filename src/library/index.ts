@@ -1,5 +1,8 @@
+import { SERVER_API, AI_API } from "@/const";
+import type { AITool, AIToolError } from "@/types";
+
 export const generateAIDescription = async (name: string): Promise<{ response: string }> => {
-  const response = await fetch("http://localhost:11434/api/generate", {
+  const response = await fetch(`${AI_API}/generate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -13,3 +16,22 @@ export const generateAIDescription = async (name: string): Promise<{ response: s
 
   return response.json();
 };
+
+export const getAITools = async (): Promise<AITool[] | AIToolError> => {
+  try {
+    const response = await fetch(`${SERVER_API}/tools`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+
+    return response.json();
+  } catch (error) {
+    console.log("Error catch", error);
+    return { response: "Error" };
+  }
+};
+
+
+

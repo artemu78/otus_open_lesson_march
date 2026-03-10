@@ -1,5 +1,6 @@
 import { useStore } from "@/store";
 import { Link } from "react-router";
+import { URL_BASE } from "@/const";
 
 export const Tool = ({ id }: { id: string }) => {
     const { aiTools } = useStore()
@@ -30,7 +31,7 @@ export const Tool = ({ id }: { id: string }) => {
                             alt={tool.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                                e.currentTarget.src = 'https://via.placeholder.com/128?text=AI';
+                                e.currentTarget.src = `${URL_BASE}/vite.svg`;
                             }}
                         />
                     </div>
