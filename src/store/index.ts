@@ -10,13 +10,13 @@ export interface IAITool {
 
 type Store = {
   aiTools: IAITool[]
-  addAITool: (tool: IAITool) => IAITool
-  removeAITool: (id: string) => void
+  addAIToolStore: (tool: IAITool) => IAITool
+  deleteAIToolStore: (id: string) => void
 }
 
 export const useStore = create<Store>()((set) => ({
   aiTools: [],
-  addAITool: (newTool) => {
+  addAIToolStore: (newTool) => {
 
     set((state) => {
       if (state.aiTools.findIndex((tool) => tool["id"] === newTool.id) === -1)
@@ -26,7 +26,7 @@ export const useStore = create<Store>()((set) => ({
     });
     return newTool;
   },
-  removeAITool: (id) => set((state) => ({
+  deleteAIToolStore: (id) => set((state) => ({
     aiTools: state.aiTools.filter((tool) => tool.id !== id)
   }))
 }))

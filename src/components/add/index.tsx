@@ -11,7 +11,7 @@ interface IFormState {
 }
 
 export const AddAIToolForm = () => {
-    const { addAITool } = useStore();
+    const { addAIToolStore: addAITool } = useStore();
     const formRef = useRef<HTMLFormElement>(null);
     const navigate = useNavigate();
     const [aiPromise, setAiPromise] = useState<Promise<{ response: string }> | null>(null);

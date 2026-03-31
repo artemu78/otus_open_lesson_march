@@ -6,7 +6,7 @@ import type { AITool, AIToolError } from "@/types";
 type toolsResponse = AITool[] | AIToolError
 
 export const useGetTools = () => {
-    const { addAITool } = useStore();
+    const { addAIToolStore: addAITool } = useStore();
     useEffect(() => {
         getAITools().then((tools: toolsResponse) => {
             if (isError(tools)) return null;
